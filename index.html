@@ -1,0 +1,283 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>墨之五境</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #171717;
+    color: #e8dfcd;
+    font-family: Georgia, "Noto Serif SC", serif;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gallery {
+    width: 100%;
+    max-width: 850px;
+    padding: 30px 20px;
+    text-align: center;
+}
+
+/* Heading */
+h1 {
+    font-size: 32px;
+    letter-spacing: 8px;
+    font-weight: normal;
+    color: #d6b56d;
+    margin-bottom: 30px;
+}
+
+/* Photograph */
+.photo-container {
+    width: 100%;
+    height: 450px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+#photo {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: opacity 0.3s ease;
+}
+
+/* Stage title */
+#stageTitle {
+    font-size: 28px;
+    color: #d6b56d;
+    letter-spacing: 5px;
+    margin-bottom: 12px;
+}
+
+/* Description */
+#description {
+    max-width: 550px;
+    min-height: 55px;
+    margin: 0 auto 30px;
+    color: #b9b0a0;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+/* Horizontal slider */
+.slider-container {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+}
+
+input[type="range"] {
+    width: 100%;
+    cursor: pointer;
+    accent-color: #d6b56d;
+}
+
+/* Stage labels */
+.stage-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+    color: #a69a84;
+    font-size: 14px;
+}
+
+.stage-labels span {
+    cursor: pointer;
+}
+
+/* Music button */
+.music-button {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    padding: 12px 20px;
+    border: 1px solid #d6b56d;
+    background: transparent;
+    color: #e8dfcd;
+    cursor: pointer;
+}
+
+.music-button:hover {
+    background: #d6b56d;
+    color: black;
+}
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 24px;
+    }
+
+    .photo-container {
+        height: 50vh;
+    }
+
+    .stage-labels {
+        font-size: 11px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="gallery">
+
+    <!-- <h1>墨之五境</h1> -->
+
+    <div class="photo-container">
+        <img id="photo" src="images/photo1.png" alt="墨之五境">
+    </div>
+
+    <div id="stageTitle">小墨</div>
+
+    <div id="description">
+        初入墨道，尚在启蒙之境。
+    </div>
+
+    <div class="slider-container">
+
+        <input
+            type="range"
+            id="slider"
+            min="0"
+            max="4"
+            value="0"
+            step="1"
+        >
+
+        <div class="stage-labels">
+            <span data-index="0">小墨</span>
+            <span data-index="1">老墨</span>
+            <span data-index="2">墨王</span>
+            <span data-index="3">墨圣</span>
+            <span data-index="4">墨祖</span>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Background music -->
+<audio id="backgroundMusic" autoplay loop>
+    <source src="music/background.mp3" type="audio/mpeg">
+</audio>
+
+<button class="music-button" id="musicButton">
+    ♪ 进步小曲
+</button>
+
+<script>
+
+// Five stages
+const stages = [
+    {
+        name: "小墨",
+        image: "images/photo1.png",
+        description: "初入墨道，尚在启蒙之境。"
+    },
+    {
+        name: "老墨",
+        image: "images/photo2.png",
+        description: "历经岁月沉淀，墨韵渐成，已非昔日吴下阿蒙。"
+    },
+    {
+        name: "墨王",
+        image: "images/photo3.png",
+        description: "一代墨王，气度非凡，执掌墨道之权柄。"
+    },
+    {
+        name: "墨圣",
+        image: "images/photo4.png",
+        description: "墨道臻于化境，才识与修为皆达圣境。"
+    },
+    {
+        name: "墨祖",
+        image: "images/photo5.png",
+        description: "开宗立祖，万墨归宗，乃墨道之至高始祖。"
+    }
+];
+
+const slider = document.getElementById("slider");
+const photo = document.getElementById("photo");
+const stageTitle = document.getElementById("stageTitle");
+const description = document.getElementById("description");
+
+let currentIndex = 0;
+
+function updateStage(index) {
+
+    const stage = stages[index];
+
+    photo.style.opacity = 0;
+
+    setTimeout(() => {
+        photo.src = stage.image;
+        photo.style.opacity = 1;
+    }, 150);
+
+    stageTitle.textContent = stage.name;
+    description.textContent = stage.description;
+
+    slider.value = index;
+    currentIndex = index;
+}
+
+// Slider movement
+slider.addEventListener("input", function() {
+    updateStage(Number(this.value));
+});
+
+// Click stage labels
+document.querySelectorAll(".stage-labels span")
+.forEach(label => {
+    label.addEventListener("click", function() {
+        updateStage(Number(this.dataset.index));
+    });
+});
+
+// Background music
+const music = document.getElementById("backgroundMusic");
+const musicButton = document.getElementById("musicButton");
+
+music.volume = 0.5;
+
+window.addEventListener("load", function() {
+    music.play().then(() => {
+        musicButton.textContent = "Ⅱ 暂停";
+    }).catch(() => {
+        musicButton.textContent = "♪ 进步小曲";
+    });
+});
+
+musicButton.addEventListener("click", function() {
+
+    if (music.paused) {
+        music.play();
+        musicButton.textContent = "Ⅱ 暂停";
+    } else {
+        music.pause();
+        musicButton.textContent = "♪ 进步小曲";
+    }
+
+});
+
+</script>
+
+</body>
+</html>
